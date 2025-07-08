@@ -1,0 +1,16 @@
+/**
+ * User-specific styling
+ */
+.user-login-form,
+.user-register-form {
+  max-width: 400px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: var(--color-bg-secondary);
+  border-radius: 0.5rem;
+}
+
+.user-picture img {
+  border-radius: 50%;
+  border: 2px solid var(--color-primary);
+}

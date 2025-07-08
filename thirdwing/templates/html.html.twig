@@ -36,14 +36,14 @@
     <meta name="theme-color" content="#3c329b">
     
     {# Apple touch icon #}
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ base_path ~ directory }}/assets/images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ base_path ~ directory }}/images/apple-touch-icon.png">
     
     {# Favicon #}
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ base_path ~ directory }}/assets/images/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ base_path ~ directory }}/assets/images/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ base_path ~ directory }}/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ base_path ~ directory }}/images/favicon-16x16.png">
     
     {# Manifest for PWA capabilities #}
-    <link rel="manifest" href="{{ base_path ~ directory }}/assets/manifest.json">
+    <link rel="manifest" href="{{ base_path ~ directory }}/manifest.json">
     
     {# OpenGraph meta tags #}
     <meta property="og:type" content="website">
@@ -56,7 +56,7 @@
       <meta property="og:title" content="{{ head_title|safe_join(' | ') }}">
     {% endif %}
     <meta property="og:url" content="{{ url('<current>') }}">
-    <meta property="og:image" content="{{ base_path ~ directory }}/assets/images/og-image.jpg">
+    <meta property="og:image" content="{{ base_path ~ directory }}/images/og-image.jpg">
     
     {# Twitter Card meta tags #}
     <meta name="twitter:card" content="summary_large_image">
@@ -66,10 +66,7 @@
     <link rel="dns-prefetch" href="//fonts.googleapis.com">
     <link rel="dns-prefetch" href="//www.google-analytics.com">
     
-    {# Preload critical resources #}
-    <link rel="preload" href="{{ base_path ~ directory }}/assets/css/base/typography.css" as="style">
-    <link rel="preload" href="{{ base_path ~ directory }}/assets/css/layout/layout.css" as="style">
-    
+    {# Let Drupal's library system handle CSS loading properly #}
     <css-placeholder token="{{ placeholder_token }}">
     <js-placeholder token="{{ placeholder_token }}">
     

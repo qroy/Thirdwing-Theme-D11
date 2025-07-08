@@ -1,0 +1,12 @@
+/**
+ * Mobile-specific styles
+ */
+@media (max-width: 768px) {
+  .container {
+    padding: 0 0.5rem;
+  }
+  
+  .site-name {
+    font-size: 1.25rem;
+  }
+}

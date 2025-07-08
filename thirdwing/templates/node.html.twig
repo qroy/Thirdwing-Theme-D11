@@ -1,0 +1,188 @@
+{#
+/**
+ * @file
+ * Thirdwing's theme implementation to display a node.
+ *
+ * Available variables:
+ * - node: The node entity with limited access to object properties and methods.
+ * - label: The title of the node.
+ * - content: All node items. Use {{ content }} to print them all,
+ *   or print a subset such as {{ content.field_example }}. Use
+ *   {{ content|without('field_example') }} to temporarily suppress the printing
+ *   of a given child element.
+ * - author_picture: The node author user entity, rendered using the "compact"
+ *   view mode.
+ * - metadata: Metadata for this node.
+ * - date: Themed creation date field.
+ * - author_name: Themed author name field.
+ * - url: Direct URL of the current node.
+ * - display_submitted: Whether submission information should be displayed.
+ * - attributes: HTML attributes for the containing element.
+ * - title_attributes: Same as attributes, except applied to the main title
+ *   tag that appears in the template.
+ * - content_attributes: Same as attributes, except applied to the main
+ *   content tag that appears in the template.
+ * - author_attributes: Same as attributes, except applied to the author of
+ *   the node tag that appears in the template.
+ * - title_prefix: Additional output populated by modules, intended to be
+ *   displayed in front of the main title tag that appears in the template.
+ * - title_suffix: Additional output populated by modules, intended to be
+ *   displayed after the main title tag that appears in the template.
+ * - view_mode: View mode; for example, "teaser" or "full".
+ * - teaser: Flag for the teaser state. Will be true if view_mode is 'teaser'.
+ * - page: Flag for the full page state. Will be true if view_mode is 'full'.
+ * - readmore: Flag for more state. Will be true if the teaser content of the
+ *   node cannot hold the main body content.
+ * - logged_in: Flag for authenticated user status. Will be true when the
+ *   current user is a logged-in member.
+ * - is_admin: Flag for admin user status. Will be true when the current user
+ *   is an administrator.
+ */
+#}
+
+{%
+  set classes = [
+    'node',
+    'node--type-' ~ node.bundle|clean_class,
+    node.isPromoted() ? 'node--promoted',
+    node.isSticky() ? 'node--sticky',
+    not node.isPublished() ? 'node--unpublished',
+    view_mode ? 'node--view-mode-' ~ view_mode|clean_class,
+    'clearfix',
+  ]
+%}
+
+<article{{ attributes.addClass(classes) }}>
+  
+  {# Node Header #}
+  <header class="node-header">
+    {{ title_prefix }}
+    {% if label and not page %}
+      <h2{{ title_attributes.addClass('node-title') }}>
+        <a href="{{ url }}" rel="bookmark">{{ label }}</a>
+      </h2>
+    {% elseif label and page %}
+      <h1{{ title_attributes.addClass('node-title') }}>
+        {{ label }}
+      </h1>
+    {% endif %}
+    {{ title_suffix }}
+
+    {% if display_submitted %}
+      <div class="node-meta">
+        {% if author_picture %}
+          <div class="node-author-picture">
+            {{ author_picture }}
+          </div>
+        {% endif %}
+        
+        <div class="node-submitted">
+          {% if author_name %}
+            <span class="node-author">
+              {{ 'By'|t }} {{ author_name }}
+            </span>
+          {% endif %}
+          {% if date %}
+            <time class="node-date" datetime="{{ node.getCreatedTime|date('c') }}">
+              {{ date }}
+            </time>
+          {% endif %}
+        </div>
+      </div>
+    {% endif %}
+
+    {# Activity-specific meta information #}
+    {% if node.bundle == 'activity' %}
+      <div class="activity-meta">
+        {% if content.field_activity_date %}
+          <div class="activity-date">
+            <strong>{{ 'Date'|t }}:</strong> {{ content.field_activity_date }}
+          </div>
+        {% endif %}
+        {% if content.field_activity_location %}
+          <div class="activity-location">
+            <strong>{{ 'Location'|t }}:</strong> {{ content.field_activity_location }}
+          </div>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    {# Repertoire-specific meta #}
+    {% if node.bundle == 'repertoire' %}
+      <div class="repertoire-meta">
+        {% if content.field_repertoire_composer %}
+          <div class="repertoire-composer">
+            {{ content.field_repertoire_composer }}
+          </div>
+        {% endif %}
+        {% if content.field_repertoire_genre %}
+          <div class="repertoire-genre">
+            {{ content.field_repertoire_genre }}
+          </div>
+        {% endif %}
+      </div>
+    {% endif %}
+  </header>
+
+  {# Node Content #}
+  <div{{ content_attributes.addClass('node-content') }}>
+    {% if view_mode == 'teaser' %}
+      {# Teaser view - show summary and read more #}
+      {% if content.body %}
+        <div class="node-summary">
+          {{ content.body }}
+        </div>
+      {% endif %}
+      
+      {% if readmore %}
+        <div class="node-readmore">
+          <a href="{{ url }}" class="read-more-link">
+            {{ 'Read more about @title'|t({'@title': label}) }}
+          </a>
+        </div>
+      {% endif %}
+    {% else %}
+      {# Full view - show all content #}
+      {{ content|without('field_activity_date', 'field_activity_location', 'field_repertoire_composer', 'field_repertoire_genre') }}
+    {% endif %}
+  </div>
+
+  {# Node Footer #}
+  {% if view_mode == 'full' %}
+    <footer class="node-footer">
+      {# Tags and categories #}
+      {% if content.field_tags %}
+        <div class="node-tags">
+          <h3 class="tags-title">{{ 'Tags'|t }}</h3>
+          {{ content.field_tags }}
+        </div>
+      {% endif %}
+      
+      {# Social sharing #}
+      <div class="node-share">
+        <h3 class="share-title">{{ 'Share this'|t }}</h3>
+        <div class="social-share">
+          <a href="https://www.facebook.com/sharer/sharer.php?u={{ url('<current>')|url_encode }}" 
+             target="_blank" 
+             rel="noopener noreferrer"
+             class="share-facebook"
+             aria-label="{{ 'Share on Facebook'|t }}">
+            Facebook
+          </a>
+          <a href="https://twitter.com/intent/tweet?url={{ url('<current>')|url_encode }}&text={{ label|url_encode }}" 
+             target="_blank" 
+             rel="noopener noreferrer"
+             class="share-twitter"
+             aria-label="{{ 'Share on Twitter'|t }}">
+            Twitter
+          </a>
+          <a href="mailto:?subject={{ label|url_encode }}&body={{ url('<current>')|url_encode }}" 
+             class="share-email"
+             aria-label="{{ 'Share via email'|t }}">
+            Email
+          </a>
+        </div>
+      </div>
+    </footer>
+  {% endif %}
+</article>

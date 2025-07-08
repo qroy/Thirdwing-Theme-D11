@@ -1,0 +1,38 @@
+thirdwing.mobile:
+  label: Mobile
+  mediaQuery: 'screen and (max-width: 767px)'
+  weight: 0
+  multipliers:
+    - 1x
+    - 2x
+
+thirdwing.tablet:
+  label: Tablet
+  mediaQuery: 'screen and (min-width: 768px) and (max-width: 1023px)'
+  weight: 1
+  multipliers:
+    - 1x
+    - 2x
+
+thirdwing.desktop:
+  label: Desktop
+  mediaQuery: 'screen and (min-width: 1024px) and (max-width: 1199px)'
+  weight: 2
+  multipliers:
+    - 1x
+    - 2x
+
+thirdwing.wide:
+  label: Wide Screen
+  mediaQuery: 'screen and (min-width: 1200px)'
+  weight: 3
+  multipliers:
+    - 1x
+    - 2x
+
+thirdwing.print:
+  label: Print
+  mediaQuery: print
+  weight: 4
+  multipliers:
+    - 1x

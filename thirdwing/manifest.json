@@ -1,0 +1,67 @@
+{
+  "name": "Thirdwing - Studentenkoor",
+  "short_name": "Thirdwing",
+  "description": "Thirdwing studentenkoor website - concerts, repertoire, and choir activities",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#3c329b",
+  "orientation": "portrait-primary",
+  "categories": ["music", "entertainment", "education"],
+  "lang": "nl",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/themes/custom/thirdwing/assets/images/favicon-16x16.png",
+      "sizes": "16x16",
+      "type": "image/png"
+    },
+    {
+      "src": "/themes/custom/thirdwing/assets/images/favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/themes/custom/thirdwing/assets/images/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/themes/custom/thirdwing/assets/images/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/themes/custom/thirdwing/assets/images/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Concerten",
+      "url": "/concerten",
+      "description": "View upcoming concerts and events"
+    },
+    {
+      "name": "Repertoire",
+      "url": "/repertoire",
+      "description": "Browse our song repertoire"
+    },
+    {
+      "name": "Nieuws",
+      "url": "/nieuws",
+      "description": "Latest news and updates"
+    },
+    {
+      "name": "Contact",
+      "url": "/contact",
+      "description": "Get in touch with us"
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false
+}

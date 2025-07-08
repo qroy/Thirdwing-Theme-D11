@@ -1,4 +1,4 @@
-name: Thirdwing D11
+name: 'Thirdwing D11'
 type: theme
 description: 'Modern responsive theme for Thirdwing.nl, combining classic and contemporary design elements for Drupal 11.'
 package: Custom
@@ -6,11 +6,9 @@ version: 4.0
 core_version_requirement: ^10 || ^11
 base theme: false
 
-# Stylesheets
+# Libraries that will be loaded on all pages
 libraries:
   - thirdwing/global-styling
-  - thirdwing/navigation
-  - thirdwing/components
 
 # Regions
 regions:
@@ -39,8 +37,3 @@ libraries-override:
 libraries-extend:
   user/drupal.user: 
     - thirdwing/user-styling
-
-# Twig debugging and cache settings (for development)
-# twig_debug: true
-# twig_auto_reload: true
-# twig_cache: false
