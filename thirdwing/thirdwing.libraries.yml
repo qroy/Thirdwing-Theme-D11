@@ -1,0 +1,62 @@
+global-styling:
+  css:
+    base:
+      assets/css/base/normalize.css: {}
+      assets/css/base/typography.css: {}
+    layout:
+      assets/css/layout/layout.css: {}
+      assets/css/layout/grid.css: {}
+    component:
+      assets/css/components/buttons.css: {}
+      assets/css/components/forms.css: {}
+      assets/css/components/messages.css: {}
+      assets/css/components/tabs.css: {}
+      assets/css/components/breadcrumb.css: {}
+    theme:
+      assets/css/theme/colors.css: {}
+      assets/css/theme/print.css: { media: print }
+  js:
+    assets/js/thirdwing.js: {}
+  dependencies:
+    - core/jquery
+    - core/drupal
+    - core/once
+
+navigation:
+  css:
+    component:
+      assets/css/components/navigation.css: {}
+      assets/css/components/menu.css: {}
+  js:
+    assets/js/navigation.js: {}
+  dependencies:
+    - core/jquery
+    - core/drupal
+    - core/once
+
+components:
+  css:
+    component:
+      assets/css/components/blocks.css: {}
+      assets/css/components/content.css: {}
+      assets/css/components/sidebar.css: {}
+      assets/css/components/footer.css: {}
+      assets/css/components/header.css: {}
+  dependencies:
+    - thirdwing/global-styling
+
+user-styling:
+  css:
+    component:
+      assets/css/components/user.css: {}
+  dependencies:
+    - thirdwing/global-styling
+
+responsive:
+  css:
+    component:
+      assets/css/responsive/mobile.css: { media: 'screen and (max-width: 768px)' }
+      assets/css/responsive/tablet.css: { media: 'screen and (min-width: 769px) and (max-width: 1024px)' }
+      assets/css/responsive/desktop.css: { media: 'screen and (min-width: 1025px)' }
+  dependencies:
+    - thirdwing/global-styling

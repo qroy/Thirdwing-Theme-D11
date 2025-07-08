@@ -1,0 +1,159 @@
+{#
+/**
+ * @file
+ * Thirdwing's theme implementation to display a single page.
+ *
+ * The doctype, html, head and body tags are not in this template. Instead they
+ * can be found in the html.html.twig template in this directory.
+ */
+#}
+<div class="layout-container">
+  
+  {% if page.topbar %}
+    <div class="topbar">
+      <div class="container">
+        {{ page.topbar }}
+      </div>
+    </div>
+  {% endif %}
+
+  <header class="header" role="banner">
+    <div class="container">
+      <div class="header-content">
+        
+        {% if page.header %}
+          <div class="header-region">
+            {{ page.header }}
+          </div>
+        {% endif %}
+
+        <div class="site-branding">
+          {% if logo %}
+            <div class="logo">
+              <a href="{{ path('<front>') }}" title="{{ 'Home'|t }}" rel="home">
+                <img src="{{ logo }}" alt="{{ 'Home'|t }}" />
+              </a>
+            </div>
+          {% endif %}
+          
+          {% if site_name %}
+            <div class="site-name">
+              <a href="{{ path('<front>') }}" title="{{ 'Home'|t }}" rel="home">{{ site_name }}</a>
+            </div>
+          {% endif %}
+          
+          {% if site_slogan %}
+            <div class="site-slogan">{{ site_slogan }}</div>
+          {% endif %}
+        </div>
+
+        <nav class="main-navigation" role="navigation">
+          <button class="menu-toggle" aria-controls="primary-menu" aria-expanded="false">
+            <span class="sr-only">{{ 'Toggle navigation'|t }}</span>
+            <span class="hamburger"></span>
+          </button>
+          
+          {% if page.primary_menu %}
+            <div class="primary-menu" id="primary-menu">
+              {{ page.primary_menu }}
+            </div>
+          {% endif %}
+          
+          {% if page.secondary_menu %}
+            <div class="secondary-menu">
+              {{ page.secondary_menu }}
+            </div>
+          {% endif %}
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  {% if page.breadcrumb %}
+    <div class="breadcrumb-wrapper">
+      <div class="container">
+        {{ page.breadcrumb }}
+      </div>
+    </div>
+  {% endif %}
+
+  <main class="main-content" role="main">
+    <div class="container">
+      
+      {% if page.highlighted %}
+        <div class="highlighted">
+          {{ page.highlighted }}
+        </div>
+      {% endif %}
+
+      {% if page.help %}
+        <div class="help">
+          {{ page.help }}
+        </div>
+      {% endif %}
+
+      <div class="layout-content">
+        
+        {% if page.sidebar_first %}
+          <aside class="sidebar sidebar-first" role="complementary">
+            {{ page.sidebar_first }}
+          </aside>
+        {% endif %}
+
+        <div class="content-area">
+          <a id="main-content" tabindex="-1"></a>
+          
+          {% if title %}
+            <h1 class="page-title">{{ title }}</h1>
+          {% endif %}
+
+          {% if tabs %}
+            <div class="tabs">
+              {{ tabs }}
+            </div>
+          {% endif %}
+
+          {% if action_links %}
+            <ul class="action-links">
+              {{ action_links }}
+            </ul>
+          {% endif %}
+
+          {{ page.content }}
+        </div>
+
+        {% if page.sidebar_second %}
+          <aside class="sidebar sidebar-second" role="complementary">
+            {{ page.sidebar_second }}
+          </aside>
+        {% endif %}
+      </div>
+    </div>
+  </main>
+
+  {% if page.footer_first or page.footer_second or page.footer_third %}
+    <footer class="footer" role="contentinfo">
+      <div class="container">
+        <div class="footer-content">
+          {% if page.footer_first %}
+            <div class="footer-first">
+              {{ page.footer_first }}
+            </div>
+          {% endif %}
+          
+          {% if page.footer_second %}
+            <div class="footer-second">
+              {{ page.footer_second }}
+            </div>
+          {% endif %}
+          
+          {% if page.footer_third %}
+            <div class="footer-third">
+              {{ page.footer_third }}
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </footer>
+  {% endif %}
+</div>

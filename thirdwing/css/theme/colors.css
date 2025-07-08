@@ -1,0 +1,165 @@
+/**
+ * @file
+ * Thirdwing D11 Theme - Color Variables and Definitions
+ * Combining original theme colors with modern design elements
+ */
+
+:root {
+  /* Primary Brand Colors - Based on original theme */
+  --color-primary: #3c329b;
+  --color-primary-light: #4a3fb5;
+  --color-primary-dark: #2e2581;
+  --color-primary-rgb: 60, 50, 155;
+  
+  --color-secondary: #eb7314;
+  --color-secondary-light: #ff8533;
+  --color-secondary-dark: #d65f00;
+  --color-secondary-rgb: 235, 115, 20;
+  
+  /* Extended Color Palette */
+  --color-accent: #aad563;
+  --color-accent-light: #c4e087;
+  --color-accent-dark: #8bc244;
+  
+  --color-error: #e9584c;
+  --color-warning: #e6d119;
+  --color-success: #5cb85c;
+  --color-info: #5bc0de;
+  
+  /* Neutral Colors */
+  --color-white: #ffffff;
+  --color-white-off: #f9f9f9;
+  --color-gray-100: #f8f9fa;
+  --color-gray-200: #e9ecef;
+  --color-gray-300: #dee2e6;
+  --color-gray-400: #ced4da;
+  --color-gray-500: #adb5bd;
+  --color-gray-600: #6c757d;
+  --color-gray-700: #495057;
+  --color-gray-800: #343a40;
+  --color-gray-900: #212529;
+  --color-black: #000000;
+  
+  /* Text Colors */
+  --color-text-primary: var(--color-gray-900);
+  --color-text-secondary: var(--color-gray-700);
+  --color-text-muted: var(--color-gray-600);
+  --color-text-inverse: var(--color-white);
+  
+  /* Background Colors */
+  --color-bg-primary: var(--color-white);
+  --color-bg-secondary: var(--color-gray-100);
+  --color-bg-tertiary: var(--color-gray-200);
+  --color-bg-inverse: var(--color-gray-900);
+  
+  /* Link Colors */
+  --color-link: var(--color-primary);
+  --color-link-hover: var(--color-primary-dark);
+  --color-link-visited: var(--color-primary-dark);
+  
+  /* Border Colors */
+  --color-border-light: var(--color-gray-300);
+  --color-border-medium: var(--color-gray-400);
+  --color-border-dark: var(--color-gray-600);
+  
+  /* Shadow Colors */
+  --color-shadow-light: rgba(0, 0, 0, 0.1);
+  --color-shadow-medium: rgba(0, 0, 0, 0.15);
+  --color-shadow-dark: rgba(0, 0, 0, 0.25);
+  
+  /* Navigation Colors */
+  --color-nav-bg: var(--color-primary);
+  --color-nav-text: var(--color-white);
+  --color-nav-hover: var(--color-secondary);
+  --color-nav-active: var(--color-secondary);
+  
+  /* Header Colors */
+  --color-header-bg: var(--color-white);
+  --color-header-text: var(--color-text-primary);
+  --color-topbar-bg: var(--color-gray-100);
+  --color-topbar-text: var(--color-text-secondary);
+  
+  /* Footer Colors */
+  --color-footer-bg: var(--color-gray-800);
+  --color-footer-text: var(--color-gray-300);
+  --color-footer-link: var(--color-gray-100);
+  --color-footer-link-hover: var(--color-white);
+  
+  /* Form Colors */
+  --color-input-bg: var(--color-white);
+  --color-input-border: var(--color-gray-400);
+  --color-input-focus: var(--color-primary);
+  --color-input-error: var(--color-error);
+  
+  /* Button Colors */
+  --color-btn-primary-bg: var(--color-primary);
+  --color-btn-primary-text: var(--color-white);
+  --color-btn-primary-hover: var(--color-primary-dark);
+  
+  --color-btn-secondary-bg: var(--color-secondary);
+  --color-btn-secondary-text: var(--color-white);
+  --color-btn-secondary-hover: var(--color-secondary-dark);
+  
+  --color-btn-outline-border: var(--color-primary);
+  --color-btn-outline-text: var(--color-primary);
+  --color-btn-outline-hover-bg: var(--color-primary);
+  --color-btn-outline-hover-text: var(--color-white);
+}
+
+/* Dark theme support */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg-primary: var(--color-gray-900);
+    --color-bg-secondary: var(--color-gray-800);
+    --color-bg-tertiary: var(--color-gray-700);
+    --color-bg-inverse: var(--color-white);
+    
+    --color-text-primary: var(--color-gray-100);
+    --color-text-secondary: var(--color-gray-300);
+    --color-text-muted: var(--color-gray-400);
+    --color-text-inverse: var(--color-gray-900);
+    
+    --color-border-light: var(--color-gray-600);
+    --color-border-medium: var(--color-gray-500);
+    --color-border-dark: var(--color-gray-400);
+    
+    --color-header-bg: var(--color-gray-800);
+    --color-header-text: var(--color-gray-100);
+    --color-topbar-bg: var(--color-gray-900);
+    --color-topbar-text: var(--color-gray-300);
+    
+    --color-input-bg: var(--color-gray-800);
+    --color-input-border: var(--color-gray-600);
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  :root {
+    --color-text-primary: var(--color-black);
+    --color-text-secondary: var(--color-black);
+    --color-bg-primary: var(--color-white);
+    --color-border-light: var(--color-black);
+    --color-border-medium: var(--color-black);
+    --color-border-dark: var(--color-black);
+  }
+}
+
+/* Color utility classes */
+.text-primary { color: var(--color-primary); }
+.text-secondary { color: var(--color-secondary); }
+.text-muted { color: var(--color-text-muted); }
+.text-white { color: var(--color-white); }
+.text-dark { color: var(--color-text-primary); }
+
+.bg-primary { background-color: var(--color-primary); }
+.bg-secondary { background-color: var(--color-secondary); }
+.bg-light { background-color: var(--color-bg-secondary); }
+.bg-dark { background-color: var(--color-bg-inverse); }
+.bg-white { background-color: var(--color-white); }
+
+.border-primary { border-color: var(--color-primary); }
+.border-secondary { border-color: var(--color-secondary); }
+.border-light { border-color: var(--color-border-light); }
+.border-medium { border-color: var(--color-border-medium); }
+.border-dark { border-color: var(--color-border-dark); }

@@ -1,0 +1,447 @@
+<?php
+
+/**
+ * @file
+ * Functions to support the Thirdwing D11 theme.
+ */
+
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Render\Element;
+use Drupal\Core\Template\Attribute;
+use Drupal\Core\Url;
+use Drupal\node\Entity\Node;
+use Drupal\taxonomy\Entity\Term;
+
+/**
+ * Implements hook_preprocess_HOOK() for html.html.twig.
+ */
+function thirdwing_preprocess_html(&$variables) {
+  // Add theme name as body class
+  $variables['attributes']['class'][] = 'theme-thirdwing';
+  
+  // Add page layout classes
+  $variables['page_layout_classes'] = [];
+  
+  // Check for sidebars
+  if (!empty($variables['page']['sidebar_first']) && !empty($variables['page']['sidebar_second'])) {
+    $variables['page_layout_classes'][] = 'layout-two-sidebars';
+  }
+  elseif (!empty($variables['page']['sidebar_first'])) {
+    $variables['page_layout_classes'][] = 'layout-sidebar-first';
+  }
+  elseif (!empty($variables['page']['sidebar_second'])) {
+    $variables['page_layout_classes'][] = 'layout-sidebar-second';
+  }
+  else {
+    $variables['page_layout_classes'][] = 'layout-no-sidebars';
+  }
+  
+  // Add responsive classes
+  $variables['attributes']['class'][] = 'responsive-layout';
+  
+  // Add modern browser support classes
+  $variables['attributes']['class'][] = 'modern-browser';
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for page.html.twig.
+ */
+function thirdwing_preprocess_page(&$variables) {
+  // Add skip link
+  if (!isset($variables['skip_link'])) {
+    $variables['skip_link'] = [
+      '#type' => 'link',
+      '#title' => t('Skip to main content'),
+      '#url' => Url::fromUserInput('#main-content'),
+      '#attributes' => [
+        'class' => ['skip-link'],
+      ],
+    ];
+  }
+
+  // Process navigation menus
+  if (isset($variables['page']['primary_menu'])) {
+    $variables['primary_menu_expanded'] = _thirdwing_expand_menu_tree($variables['page']['primary_menu']);
+  }
+  
+  // Add breadcrumb separator
+  if (isset($variables['breadcrumb'])) {
+    $variables['breadcrumb_separator'] = ' › ';
+  }
+  
+  // Add page layout classes to page template
+  $variables['page_layout_classes'] = [];
+  if (!empty($variables['page']['sidebar_first']) && !empty($variables['page']['sidebar_second'])) {
+    $variables['page_layout_classes'][] = 'has-sidebar-first';
+    $variables['page_layout_classes'][] = 'has-sidebar-second';
+  }
+  elseif (!empty($variables['page']['sidebar_first'])) {
+    $variables['page_layout_classes'][] = 'has-sidebar-first';
+  }
+  elseif (!empty($variables['page']['sidebar_second'])) {
+    $variables['page_layout_classes'][] = 'has-sidebar-second';
+  }
+  else {
+    $variables['page_layout_classes'][] = 'no-sidebars';
+  }
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for node.html.twig.
+ */
+function thirdwing_preprocess_node(&$variables) {
+  $node = $variables['node'];
+  
+  // Add node-specific classes
+  $variables['attributes']['class'][] = 'node-' . $node->getType();
+  
+  // Add published/unpublished class
+  if ($node->isPublished()) {
+    $variables['attributes']['class'][] = 'node-published';
+  }
+  else {
+    $variables['attributes']['class'][] = 'node-unpublished';
+  }
+  
+  // Add view mode class
+  $variables['attributes']['class'][] = 'node-view-mode-' . str_replace('_', '-', $variables['view_mode']);
+  
+  // Format submitted information
+  if (isset($variables['submitted'])) {
+    $variables['submitted'] = [
+      'date' => $variables['date'],
+      'author' => $variables['author_name'],
+      'separator' => ' — ',
+    ];
+  }
+  
+  // Add read more link for teasers
+  if ($variables['teaser'] && $node->access('view')) {
+    $variables['read_more'] = [
+      '#type' => 'link',
+      '#title' => t('Read more about @title', ['@title' => $node->getTitle()]),
+      '#url' => $node->toUrl(),
+      '#attributes' => [
+        'class' => ['read-more-link'],
+      ],
+    ];
+  }
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for block.html.twig.
+ */
+function thirdwing_preprocess_block(&$variables) {
+  $block = $variables['elements']['#block'];
+  
+  // Add block-specific classes
+  $variables['attributes']['class'][] = 'block-' . str_replace('_', '-', $block->getPluginId());
+  
+  // Add region-specific classes
+  if (isset($variables['configuration']['region'])) {
+    $variables['attributes']['class'][] = 'block-region-' . str_replace('_', '-', $variables['configuration']['region']);
+  }
+  
+  // Add title attributes
+  if (isset($variables['title_attributes'])) {
+    $variables['title_attributes']['class'][] = 'block-title';
+  }
+  
+  // Add clearfix to blocks
+  $variables['attributes']['class'][] = 'clearfix';
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for menu.html.twig.
+ */
+function thirdwing_preprocess_menu(&$variables) {
+  // Add menu-specific classes
+  $variables['attributes']['class'][] = 'menu-' . str_replace('_', '-', $variables['menu_name']);
+  
+  // Add depth classes to menu items
+  _thirdwing_add_menu_depth_classes($variables['items']);
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for menu-link.html.twig.
+ */
+function thirdwing_preprocess_menu_link(&$variables) {
+  // Add active class to current menu item
+  if ($variables['url']->isRouted()) {
+    $route_name = $variables['url']->getRouteName();
+    $current_route = \Drupal::routeMatch()->getRouteName();
+    
+    if ($route_name === $current_route) {
+      $variables['attributes']['class'][] = 'is-active';
+    }
+  }
+  
+  // Add external link indicator
+  if ($variables['url']->isExternal()) {
+    $variables['attributes']['class'][] = 'external-link';
+    $variables['attributes']['target'] = '_blank';
+    $variables['attributes']['rel'] = 'noopener noreferrer';
+  }
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for breadcrumb.html.twig.
+ */
+function thirdwing_preprocess_breadcrumb(&$variables) {
+  // Add custom breadcrumb separator
+  $variables['separator'] = ' › ';
+  
+  // Add home link if not present
+  if (!empty($variables['breadcrumb'])) {
+    $first_crumb = reset($variables['breadcrumb']);
+    if (!$first_crumb || $first_crumb['url']->getRouteName() !== '<front>') {
+      array_unshift($variables['breadcrumb'], [
+        'text' => t('Home'),
+        'url' => Url::fromRoute('<front>'),
+      ]);
+    }
+  }
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for form elements.
+ */
+function thirdwing_preprocess_form_element(&$variables) {
+  // Add form element classes
+  $variables['attributes']['class'][] = 'form-element';
+  
+  // Add type-specific classes
+  if (isset($variables['element']['#type'])) {
+    $variables['attributes']['class'][] = 'form-element-' . str_replace('_', '-', $variables['element']['#type']);
+  }
+  
+  // Add required class
+  if (isset($variables['element']['#required']) && $variables['element']['#required']) {
+    $variables['attributes']['class'][] = 'form-element-required';
+  }
+  
+  // Add error class
+  if (isset($variables['element']['#errors']) && $variables['element']['#errors']) {
+    $variables['attributes']['class'][] = 'form-element-error';
+  }
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for input elements.
+ */
+function thirdwing_preprocess_input(&$variables) {
+  // Add input-specific classes
+  $variables['attributes']['class'][] = 'form-input';
+  
+  if (isset($variables['element']['#type'])) {
+    $variables['attributes']['class'][] = 'form-input-' . str_replace('_', '-', $variables['element']['#type']);
+  }
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for textarea elements.
+ */
+function thirdwing_preprocess_textarea(&$variables) {
+  $variables['attributes']['class'][] = 'form-textarea';
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for select elements.
+ */
+function thirdwing_preprocess_select(&$variables) {
+  $variables['attributes']['class'][] = 'form-select';
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for comments.
+ */
+function thirdwing_preprocess_comment(&$variables) {
+  $comment = $variables['elements']['#comment'];
+  
+  // Add comment-specific classes
+  $variables['attributes']['class'][] = 'comment';
+  $variables['attributes']['class'][] = 'comment-' . $comment->getCommentType()->id();
+  
+  // Add zebra striping
+  $variables['attributes']['class'][] = $variables['elements']['#zebra'];
+  
+  // Format submitted information
+  if (isset($variables['submitted'])) {
+    $variables['submitted'] = [
+      'date' => $variables['created'],
+      'author' => $variables['author'],
+      'separator' => ' — ',
+    ];
+  }
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for field templates.
+ */
+function thirdwing_preprocess_field(&$variables) {
+  // Add field-specific classes
+  $variables['attributes']['class'][] = 'field-' . str_replace('_', '-', $variables['field_name']);
+  $variables['attributes']['class'][] = 'field-type-' . str_replace('_', '-', $variables['field_type']);
+  
+  // Add multiple values class
+  if (count($variables['items']) > 1) {
+    $variables['attributes']['class'][] = 'field-multiple';
+  }
+  
+  // Add view mode class
+  $variables['attributes']['class'][] = 'field-view-mode-' . str_replace('_', '-', $variables['element']['#view_mode']);
+}
+
+/**
+ * Implements hook_theme_suggestions_HOOK_alter() for page templates.
+ */
+function thirdwing_theme_suggestions_page_alter(array &$suggestions, array $variables) {
+  // Add template suggestions for different content types
+  if ($node = \Drupal::routeMatch()->getParameter('node')) {
+    if ($node instanceof Node) {
+      $suggestions[] = 'page__node__' . $node->getType();
+    }
+  }
+  
+  // Add template suggestions for taxonomy terms
+  if ($term = \Drupal::routeMatch()->getParameter('taxonomy_term')) {
+    if ($term instanceof Term) {
+      $suggestions[] = 'page__taxonomy__' . $term->getVocabularyId();
+    }
+  }
+}
+
+/**
+ * Implements hook_theme_suggestions_HOOK_alter() for node templates.
+ */
+function thirdwing_theme_suggestions_node_alter(array &$suggestions, array $variables) {
+  $node = $variables['elements']['#node'];
+  $view_mode = $variables['elements']['#view_mode'];
+  
+  // Add template suggestions for different view modes
+  $suggestions[] = 'node__' . $node->getType() . '__' . $view_mode;
+  
+  // Add template suggestion for specific node ID
+  $suggestions[] = 'node__' . $node->id();
+  $suggestions[] = 'node__' . $node->id() . '__' . $view_mode;
+}
+
+/**
+ * Implements hook_theme_suggestions_HOOK_alter() for block templates.
+ */
+function thirdwing_theme_suggestions_block_alter(array &$suggestions, array $variables) {
+  // Add template suggestions for different regions
+  if (isset($variables['elements']['#configuration']['region'])) {
+    $suggestions[] = 'block__' . $variables['elements']['#configuration']['region'];
+    $suggestions[] = 'block__' . $variables['elements']['#configuration']['region'] . '__' . $variables['elements']['#base_plugin_id'];
+  }
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function thirdwing_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  // Add theme-specific form classes
+  if (isset($form['#attributes']['class'])) {
+    $form['#attributes']['class'][] = 'thirdwing-form';
+  }
+  else {
+    $form['#attributes']['class'] = ['thirdwing-form'];
+  }
+  
+  // Add form-specific classes
+  $form['#attributes']['class'][] = 'form-' . str_replace('_', '-', $form_id);
+}
+
+/**
+ * Implements hook_form_search_form_alter().
+ */
+function thirdwing_form_search_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  // Enhance search form
+  $form['keys']['#attributes']['placeholder'] = t('Search...');
+  $form['keys']['#attributes']['class'][] = 'search-input';
+  
+  if (isset($form['actions']['submit'])) {
+    $form['actions']['submit']['#value'] = t('Search');
+    $form['actions']['submit']['#attributes']['class'][] = 'search-submit';
+  }
+}
+
+/**
+ * Helper function to expand menu tree for better accessibility.
+ */
+function _thirdwing_expand_menu_tree($menu_tree) {
+  $expanded_tree = [];
+  
+  foreach ($menu_tree as $key => $item) {
+    $expanded_tree[$key] = $item;
+    
+    if (!empty($item['below'])) {
+      $expanded_tree[$key]['below'] = _thirdwing_expand_menu_tree($item['below']);
+    }
+  }
+  
+  return $expanded_tree;
+}
+
+/**
+ * Helper function to add depth classes to menu items.
+ */
+function _thirdwing_add_menu_depth_classes(&$items, $depth = 0) {
+  foreach ($items as $key => &$item) {
+    $item['attributes']['class'][] = 'menu-item-depth-' . $depth;
+    
+    if (!empty($item['below'])) {
+      _thirdwing_add_menu_depth_classes($item['below'], $depth + 1);
+    }
+  }
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for status messages.
+ */
+function thirdwing_preprocess_status_messages(&$variables) {
+  // Add custom message classes
+  foreach ($variables['message_list'] as $type => $messages) {
+    $variables['attributes']['class'][] = 'messages-' . $type;
+  }
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for pager.
+ */
+function thirdwing_preprocess_pager(&$variables) {
+  // Add pager-specific classes
+  $variables['attributes']['class'][] = 'pager';
+  $variables['attributes']['class'][] = 'clearfix';
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for views.
+ */
+function thirdwing_preprocess_views_view(&$variables) {
+  $view = $variables['view'];
+  
+  // Add view-specific classes
+  $variables['attributes']['class'][] = 'view-' . str_replace('_', '-', $view->storage->id());
+  $variables['attributes']['class'][] = 'view-display-' . str_replace('_', '-', $view->current_display);
+  
+  // Add count class
+  if (isset($variables['rows']) && is_array($variables['rows'])) {
+    $count = count($variables['rows']);
+    $variables['attributes']['class'][] = 'view-count-' . $count;
+  }
+}
+
+/**
+ * Implements hook_library_info_alter().
+ */
+function thirdwing_library_info_alter(&$libraries, $extension) {
+  // Modify core libraries if needed
+  if ($extension === 'core' && isset($libraries['normalize'])) {
+    // Override normalize.css with theme version
+    $libraries['normalize']['css']['base'] = [
+      '/themes/custom/thirdwing/assets/css/base/normalize.css' => [],
+    ];
+  }
+}

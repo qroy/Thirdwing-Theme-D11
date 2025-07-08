@@ -1,0 +1,46 @@
+name: Thirdwing D11
+type: theme
+description: 'Modern responsive theme for Thirdwing.nl, combining classic and contemporary design elements for Drupal 11.'
+package: Custom
+version: 4.0
+core_version_requirement: ^10 || ^11
+base theme: false
+
+# Stylesheets
+libraries:
+  - thirdwing/global-styling
+  - thirdwing/navigation
+  - thirdwing/components
+
+# Regions
+regions:
+  topbar: 'Top Bar'
+  header: 'Header'
+  primary_menu: 'Primary Menu'
+  secondary_menu: 'Secondary Menu'
+  breadcrumb: 'Breadcrumb'
+  highlighted: 'Highlighted'
+  help: 'Help'
+  content: 'Content'
+  sidebar_first: 'Left Sidebar'
+  sidebar_second: 'Right Sidebar'
+  footer_first: 'Footer First'
+  footer_second: 'Footer Second'
+  footer_third: 'Footer Third'
+
+# Libraries that will be loaded on all pages
+libraries-override:
+  system/base:
+    css:
+      component:
+        /core/themes/stable9/css/system/components/ajax-progress.module.css: false
+        /core/themes/stable9/css/system/components/autocomplete-loading.module.css: false
+
+libraries-extend:
+  user/drupal.user: 
+    - thirdwing/user-styling
+
+# Twig debugging and cache settings (for development)
+# twig_debug: true
+# twig_auto_reload: true
+# twig_cache: false

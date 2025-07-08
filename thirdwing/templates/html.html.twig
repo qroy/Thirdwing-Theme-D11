@@ -1,0 +1,174 @@
+{#
+/**
+ * @file
+ * Thirdwing D11 theme's implementation to display the basic html structure.
+ *
+ * Variables:
+ * - attributes: HTML attributes for the html tag.
+ * - children: The content of the html tag.
+ * - db_offline: TRUE if the database is offline.
+ * - db_is_active: TRUE if the database is active.
+ * - is_admin: TRUE if user is an administrator.
+ * - logged_in: TRUE if the user is registered and signed in.
+ * - root_path: The root path of the current page.
+ * - node_type: The content type for the current node, if the page is a node.
+ * - head_title: Title for the head tag.
+ * - page_top: Initial rendered markup for the page top region.
+ * - page: The rendered page markup.
+ * - page_bottom: Closing rendered markup for the page bottom region.
+ * - theme: The theme object.
+ */
+#}
+<!DOCTYPE html>
+<html{{ html_attributes }}>
+  <head>
+    <head-placeholder token="{{ placeholder_token }}">
+    <title>{{ head_title|safe_join(' | ') }}</title>
+    
+    {# Preconnect to external domains for performance #}
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    {# Viewport meta tag for responsive design #}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    {# Theme color for mobile browsers #}
+    <meta name="theme-color" content="#3c329b">
+    
+    {# Apple touch icon #}
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ base_path ~ directory }}/assets/images/apple-touch-icon.png">
+    
+    {# Favicon #}
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ base_path ~ directory }}/assets/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ base_path ~ directory }}/assets/images/favicon-16x16.png">
+    
+    {# Manifest for PWA capabilities #}
+    <link rel="manifest" href="{{ base_path ~ directory }}/assets/manifest.json">
+    
+    {# OpenGraph meta tags #}
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="{{ site_name }}">
+    {% if page.content.system_main['#node'] %}
+      <meta property="og:title" content="{{ page.content.system_main['#node'].title.value }}">
+      <meta property="og:description" content="{{ page.content.system_main['#node'].body.summary|default(page.content.system_main['#node'].body.value|striptags|truncate(160)) }}">
+    {% else %}
+      <meta property="og:title" content="{{ head_title|safe_join(' | ') }}">
+    {% endif %}
+    <meta property="og:url" content="{{ url('<current>') }}">
+    <meta property="og:image" content="{{ base_path ~ directory }}/assets/images/og-image.jpg">
+    
+    {# Twitter Card meta tags #}
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@thirdwing">
+    
+    {# DNS prefetch for performance #}
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    <link rel="dns-prefetch" href="//www.google-analytics.com">
+    
+    {# Preload critical resources #}
+    <link rel="preload" href="{{ base_path ~ directory }}/assets/css/base/typography.css" as="style">
+    <link rel="preload" href="{{ base_path ~ directory }}/assets/css/layout/layout.css" as="style">
+    
+    <css-placeholder token="{{ placeholder_token }}">
+    <js-placeholder token="{{ placeholder_token }}">
+    
+    {# Skip link for accessibility #}
+    <style>
+      .skip-link {
+        position: absolute;
+        top: -40px;
+        left: 6px;
+        background: #3c329b;
+        color: white;
+        padding: 8px;
+        text-decoration: none;
+        border-radius: 0 0 4px 4px;
+        z-index: 1000;
+        transition: top 0.3s ease;
+      }
+      
+      .skip-link:focus {
+        top: 0;
+        outline: 2px solid #eb7314;
+        outline-offset: 2px;
+      }
+    </style>
+  </head>
+  
+  <body{{ attributes.addClass(body_classes) }}>
+    {# Skip to main content link for accessibility #}
+    <a href="#main-content" class="skip-link">
+      {{ 'Skip to main content'|t }}
+    </a>
+    
+    {# GTM noscript (if using Google Tag Manager) #}
+    <noscript>
+      <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXXXX" 
+              height="0" 
+              width="0" 
+              style="display:none;visibility:hidden"
+              title="Google Tag Manager">
+      </iframe>
+    </noscript>
+    
+    {# Keyboard navigation improvement #}
+    <script>
+      // Add keyboard navigation class
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Tab') {
+          document.body.classList.add('using-keyboard');
+        }
+      });
+      
+      document.addEventListener('mousedown', function() {
+        document.body.classList.remove('using-keyboard');
+      });
+    </script>
+    
+    {# Page regions #}
+    <div id="page-wrapper">
+      <div id="page">
+        <header id="header" class="header-main" role="banner">
+          {{ page_top }}
+        </header>
+        
+        <main id="main" class="main-content" role="main">
+          {{ page }}
+        </main>
+        
+        <footer id="footer" class="footer-main" role="contentinfo">
+          {{ page_bottom }}
+        </footer>
+      </div>
+    </div>
+    
+    {# Service Worker registration for PWA #}
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register('{{ base_path ~ directory }}/sw.js')
+            .then(function(registration) {
+              console.log('SW registered: ', registration);
+            })
+            .catch(function(registrationError) {
+              console.log('SW registration failed: ', registrationError);
+            });
+        });
+      }
+    </script>
+    
+    {# Analytics placeholder - replace with your tracking code #}
+    <script>
+      // Google Analytics 4 placeholder
+      // Replace GA_MEASUREMENT_ID with your actual measurement ID
+      /*
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'GA_MEASUREMENT_ID');
+      */
+    </script>
+    
+    <js-bottom-placeholder token="{{ placeholder_token }}">
+  </body>
+</html>
