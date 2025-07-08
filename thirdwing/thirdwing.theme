@@ -132,14 +132,19 @@ function thirdwing_preprocess_node(&$variables) {
  * Implements hook_preprocess_HOOK() for block.html.twig.
  */
 function thirdwing_preprocess_block(&$variables) {
+  // Check if block object exists
+  if (!isset($variables['elements']['#block']) || !$variables['elements']['#block']) {
+    return;
+  }
+  
   $block = $variables['elements']['#block'];
   
   // Add block-specific classes
   $variables['attributes']['class'][] = 'block-' . str_replace('_', '-', $block->getPluginId());
   
   // Add region-specific classes
-  if (isset($variables['configuration']['region'])) {
-    $variables['attributes']['class'][] = 'block-region-' . str_replace('_', '-', $variables['configuration']['region']);
+  if (isset($variables['elements']['#configuration']['region'])) {
+    $variables['attributes']['class'][] = 'block-region-' . str_replace('_', '-', $variables['elements']['#configuration']['region']);
   }
   
   // Add title attributes

@@ -50,7 +50,8 @@
     <meta property="og:site_name" content="{{ site_name }}">
     {% if page.content.system_main['#node'] %}
       <meta property="og:title" content="{{ page.content.system_main['#node'].title.value }}">
-      <meta property="og:description" content="{{ page.content.system_main['#node'].body.summary|default(page.content.system_main['#node'].body.value|striptags|truncate(160)) }}">
+      {% set description = page.content.system_main['#node'].body.summary|default(page.content.system_main['#node'].body.value|striptags) %}
+      <meta property="og:description" content="{{ description|length > 160 ? description|slice(0, 160) ~ '...' : description }}">
     {% else %}
       <meta property="og:title" content="{{ head_title|safe_join(' | ') }}">
     {% endif %}
