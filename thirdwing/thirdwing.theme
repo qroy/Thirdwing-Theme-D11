@@ -199,7 +199,11 @@ function thirdwing_preprocess_breadcrumb(&$variables) {
   // Add home link if not present
   if (!empty($variables['breadcrumb'])) {
     $first_crumb = reset($variables['breadcrumb']);
-    if (!$first_crumb || $first_crumb['url']->getRouteName() !== '<front>') {
+    // Check if first breadcrumb item exists and has a URL object
+    if (!$first_crumb || 
+        !isset($first_crumb['url']) || 
+        !is_object($first_crumb['url']) ||
+        $first_crumb['url']->getRouteName() !== '<front>') {
       array_unshift($variables['breadcrumb'], [
         'text' => t('Home'),
         'url' => Url::fromRoute('<front>'),
